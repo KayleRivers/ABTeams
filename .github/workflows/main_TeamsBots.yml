@@ -19,18 +19,18 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Log in to registry
+    - name: Log in to Azure Container Registry
       uses: docker/login-action@v2
       with:
-        registry: https://testbotapp.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_5a904da0ad2e4d1da7162ec58f484963 }}
+        registry: testbotapp.azurecr.io
+        username: TestBotApp
+        password: /D83b5n8VDf43wngr9XCCT1M0oFeyZSqD/oXC6c3Nj+ACRCFmZry
 
-    - name: Build and push container image to registry
+    - name: Build and push container image to ACR
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: testbotapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}/appsvc/staticsite:${{ github.sha }}
+        tags: testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'TeamsBots'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_fbbaef05326b491f8f0796438ba09b6e }}
-        images: 'testbotapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+        images: 'testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}'
