@@ -22,22 +22,22 @@ jobs:
     - name: Log in to registry
       uses: docker/login-action@v2
       with:
-        registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_06c55a649a384c1c9f762924c186d357 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_8ac404a72b974ff681f6b63c3fa977e3 }}
+        registry: https://testbotapp.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_5a904da0ad2e4d1da7162ec58f484963 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_06c55a649a384c1c9f762924c186d357 }}/appsvc/staticsite:${{ github.sha }}
+        tags: testbotapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}/appsvc/staticsite:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'MicrosoftAppID'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'TeamsBots'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_d802f666ee5148628205a161ae253e6d }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_06c55a649a384c1c9f762924c186d357 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_fbbaef05326b491f8f0796438ba09b6e }}
+        images: 'testbotapp.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5b6a81bc05844bf78238c19ad4408b23 }}/appsvc/staticsite:${{ github.sha }}'
