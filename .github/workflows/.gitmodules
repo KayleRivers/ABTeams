@@ -1,0 +1,3 @@
+[submodule "BotBuilder-Samples"]
+    path = BotBuilder-Samples
+    url = https://github.com/microsoft/BotBuilder-Samples.git
