@@ -1,0 +1,15 @@
+{
+  "name": "MarkTestBot",
+  "description": "",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "development",
+      "endpoint": "https://testbotapp.azurewebsites.net/api/messages",
+      "appId": "your-microsoft-app-id",
+      "appPassword": "your-microsoft-app-password"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
