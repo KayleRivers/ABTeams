@@ -73,3 +73,4 @@ server.on('upgrade', async (req, socket, head) => {
     streamingAdapter.onTurnError = onTurnErrorHandler;
 
     await streamingAdapter.process(req, socket, head, (context) => myBot.run(context));
+});
