@@ -15,6 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: true  # Ensure submodules are initialized and updated
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -27,11 +29,8 @@ jobs:
         password: /D83b5n8VDf43wngr9XCCT1M0oFeyZSqD/oXC6c3Nj+ACRCFmZry
 
     - name: Build and push container image to ACR
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}
-        file: ./Dockerfile
+      run: |
+        /usr/bin/docker buildx build --file ./Dockerfile --iidfile /tmp/docker-build-push-QcNBwb/iidfile --secret id=GIT_AUTH_TOKEN,src=/tmp/docker-build-push-QcNBwb/tmp-2434-6HfXnbnN86RA --tag testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }} --metadata-file /tmp/docker-build-push-QcNBwb/metadata-file --push .
 
   deploy:
     runs-on: ubuntu-latest
