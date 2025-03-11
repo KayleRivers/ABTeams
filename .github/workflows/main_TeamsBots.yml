@@ -25,12 +25,12 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: testbotapp.azurecr.io
-        username: TestBotApp
-        password: /D83b5n8VDf43wngr9XCCT1M0oFeyZSqD/oXC6c3Nj+ACRCFmZry
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Build and push container image to ACR
       run: |
-        /usr/bin/docker buildx build --file ./Dockerfile --iidfile /tmp/docker-build-push-QcNBwb/iidfile --secret id=GIT_AUTH_TOKEN,src=/tmp/docker-build-push-QcNBwb/tmp-2434-6HfXnbnN86RA --tag testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }} --metadata-file /tmp/docker-build-push-QcNBwb/metadata-file --push .
+        docker buildx build --file ./Dockerfile --tag testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }} --push .
 
   deploy:
     runs-on: ubuntu-latest
