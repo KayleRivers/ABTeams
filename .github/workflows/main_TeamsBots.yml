@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'MicrosoftAppId'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -45,6 +45,6 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'TeamsBots'
-        slot-name: 'production'
+        slot-name: 'MicrosoftAppId'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
-        images: 'testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}'
+        images: 'testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}' 
