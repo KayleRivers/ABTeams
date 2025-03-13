@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-onst path = require('path');
+const path = require('path');
 
 class SimulatedUser {
     constructor(userId) {
