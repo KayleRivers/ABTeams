@@ -36,6 +36,9 @@ class EchoBot extends ActivityHandler {
     constructor() {
         super();
         this.onMessage(async (context, next) => {
+            // Log the incoming activity
+            console.log('Incoming activity:', context.activity);
+
             const messageText = context.activity.text.toLowerCase();
 
             if (messageText.includes('join')) {
