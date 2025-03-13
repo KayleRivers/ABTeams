@@ -27,24 +27,30 @@ const restify = require('restify');
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
 const {
     CloudAdapter,
-    ConfigurationBotFrameworkAuthentication
+    ConfigurationBotFrameworkAuthentication,
+    ActivityHandler
 } = require('botbuilder');
 
 // This bot's main dialog.
-const { EchoBot } = require('./bot');
+class EchoBot extends ActivityHandler {
+    constructor() {
+        super();
+        this.onMessage(async (context, next) => {
+            const messageText = context.activity.text.toLowerCase();
 
-async onMessage(context) {
-    const messageText = context.activity.text.toLowerCase();
+            if (messageText.includes('join')) {
+                for (const user of users) {
+                    user.isInCall = true; // Simulating user joining
+                    await context.sendActivity(`${user.userId} has joined the call.`);
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Simulate staggered joining
+                }
+            } else {
+                // Echo the user's message
+                await context.sendActivity(`You said: ${context.activity.text}`);
+            }
 
-    if (messageText.includes('join')) {
-        for (const user of users) {
-            user.isInCall = true; // Simulating user joining
-            await context.sendActivity(`${user.userId} has joined the call.`);
-            await new Promise(resolve => setTimeout(resolve, 100)); // Simulate staggered joining
-        }
-    } else {
-        // Echo the user's message
-        await context.sendActivity(`You said: ${context.activity.text}`);
+            await next();
+        });
     }
 }
 
