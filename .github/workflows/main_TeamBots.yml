@@ -25,8 +25,8 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: testbotapp.azurecr.io
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_5B6A81BC05844BF78238C19AD4408B23 }}
+        password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_5A904DA0AD2E4D1DA7162EC58F484963 }}
 
     - name: Build and push container image to ACR
       run: |
@@ -44,7 +44,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'TeamsBots'
+        app-name: 'TeamBots'
         slot-name: 'MicrosoftAppId'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FBBAEF05326B491F8F0796438BA09B6E }}
         images: 'testbotapp.azurecr.io/appsvc/staticsite:${{ github.sha }}' 
