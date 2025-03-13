@@ -81,6 +81,9 @@ const onTurnErrorHandler = async (context, error) => {
     //       configuration instructions.
     console.error(`\n [onTurnError] unhandled error: ${ error }`);
 
+    // Log the context.activity object to debug the issue
+    console.log('Context activity on error:', context.activity);
+
     // Send a trace activity, which will be displayed in Bot Framework Emulator
     await context.sendTraceActivity(
         'OnTurnError Trace',
