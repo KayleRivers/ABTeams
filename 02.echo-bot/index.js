@@ -25,7 +25,10 @@ server.listen(process.env.port || process.env.PORT || 3978, () => {
 });
 
 // Bot Framework Authentication
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(process.env);
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication({
+    MicrosoftAppId: process.env.MicrosoftAppId,
+    MicrosoftAppPassword: process.env.MicrosoftAppPassword
+});
 
 // Create adapter
 const adapter = new CloudAdapter(botFrameworkAuthentication);
@@ -64,7 +67,12 @@ class EchoBot extends ActivityHandler {
     constructor() {
         super();
         this.onMessage(async (context, next) => {
-            const messageText = context.activity.text.toLowerCase();
+            // Ensure context.activity and its properties are defined
+            const activity = context.activity || {};
+            const messageText = (activity.text || '').toLowerCase();
+            const fromId = (activity.from || {}).id || 'unknown';
+
+            console.log('Incoming activity:', activity);
 
             if (messageText.includes('join')) {
                 for (const user of users) {
@@ -74,7 +82,7 @@ class EchoBot extends ActivityHandler {
                 }
             } else {
                 // Echo the user's message
-                await context.sendActivity(`You said: ${context.activity.text}`);
+                await context.sendActivity(`You said: ${messageText}`);
             }
 
             await next();
