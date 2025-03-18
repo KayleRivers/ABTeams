@@ -3,17 +3,44 @@
 
 const { ActivityHandler, MessageFactory } = require('botbuilder');
 
+// Simulated user class
+class SimulatedUser {
+    constructor(userId) {
+        this.userId = userId; // Unique identifier
+        this.isInCall = false; // Track presence in the call
+    }
+}
+
+// Create an array to hold simulated users
+const users = [];
+for (let i = 1; i <= 500; i++) {
+    users.push(new SimulatedUser(`User${i}`));
+}
+
 class EchoBot extends ActivityHandler {
     constructor() {
         super();
-        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
+        // Handle messages
         this.onMessage(async (context, next) => {
-            const replyText = `Echo: ${ context.activity.text }`;
-            await context.sendActivity(MessageFactory.text(replyText, replyText));
-            // By calling next() you ensure that the next BotHandler is run.
+            const activity = context.activity || {};
+            const messageText = (activity.text || '').toLowerCase();
+
+            if (messageText.includes('join')) {
+                for (const user of users) {
+                    user.isInCall = true; // Simulating user joining
+                    await context.sendActivity(`${user.userId} has joined the call.`);
+                    await new Promise(resolve => setTimeout(resolve, 100)); // Simulate staggered joining
+                }
+            } else {
+                // Echo the user's message
+                const replyText = `Echo: ${context.activity.text}`;
+                await context.sendActivity(MessageFactory.text(replyText, replyText));
+            }
+
             await next();
         });
 
+        // Handle new members
         this.onMembersAdded(async (context, next) => {
             const membersAdded = context.activity.membersAdded;
             const welcomeText = 'Hello and welcome!';
@@ -22,7 +49,6 @@ class EchoBot extends ActivityHandler {
                     await context.sendActivity(MessageFactory.text(welcomeText, welcomeText));
                 }
             }
-            // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
     }

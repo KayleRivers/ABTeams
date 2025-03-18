@@ -25,7 +25,12 @@ server.listen(process.env.port || process.env.PORT || 3978, () => {
 });
 
 // Bot Framework Authentication
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication(process.env);
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication({
+    MicrosoftAppId: process.env.MicrosoftAppId,
+    MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+    MicrosoftAppTenantId: process.env.MicrosoftAppTenantId,
+    MicrosoftAppType: process.env.MicrosoftAppType
+});
 
 // Create adapter
 const adapter = new CloudAdapter(botFrameworkAuthentication);
@@ -64,7 +69,12 @@ class EchoBot extends ActivityHandler {
     constructor() {
         super();
         this.onMessage(async (context, next) => {
-            const messageText = context.activity.text.toLowerCase();
+            // Ensure context.activity and its properties are defined
+            const activity = context.activity || {};
+            const messageText = (activity.text || '').toLowerCase();
+            const fromId = (activity.from || {}).id || 'unknown';
+
+            console.log('Incoming activity:', activity);
 
             if (messageText.includes('join')) {
                 for (const user of users) {
@@ -74,7 +84,7 @@ class EchoBot extends ActivityHandler {
                 }
             } else {
                 // Echo the user's message
-                await context.sendActivity(`You said: ${context.activity.text}`);
+                await context.sendActivity(`You said: ${messageText}`);
             }
 
             await next();
@@ -92,6 +102,20 @@ server.post('/api/messages', async (req, res) => {
         } catch (error) {
             console.error('Error processing request:', error);
             await context.sendActivity('There was an error processing your request.');
+        }
+    });
+});
+
+// Listen for calling events
+server.post('/api/calling', async (req, res) => {
+    await adapter.process(req, res, async (context) => {
+        try {
+            // Handle calling events here
+            console.log('Incoming calling event:', context.activity);
+            await context.sendActivity('Received a calling event.');
+        } catch (error) {
+            console.error('Error processing calling event:', error);
+            await context.sendActivity('There was an error processing your calling event.');
         }
     });
 });
