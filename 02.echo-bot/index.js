@@ -2,8 +2,6 @@
 // Licensed under the MIT License.
 
 const path = require('path');
-const dotenv = require('dotenv');
-const restify = require('restify');
 const {
     CloudAdapter,
     ConfigurationBotFrameworkAuthentication,
